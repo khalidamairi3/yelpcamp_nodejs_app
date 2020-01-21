@@ -69,7 +69,7 @@ app.get("/camps/new",function(req,res){
 	
 });
 
-app.get("/show/:id",function(req,res){
+app.get("/camp/:id",function(req,res){
 	
 	var id=req.params.id;
 	
