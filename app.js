@@ -8,7 +8,8 @@ var Camp=require("./models/camp");
 var Comment=require("./models/comment");
 var User=require("./models/user");
 var passport=require("passport"),
-	LocalStrategy=require("passport-local");
+	LocalStrategy=require("passport-local"),
+	flash=require("connect-flash");
 
 // var express     = require("express"),
 //     app         = express(),
@@ -27,7 +28,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
 // app.use(express.static(__dirname + "/public"));
 // seedDB();
-
+app.use(flash());
 // PASSPORT CONFIGURATION
 app.use(require("express-session")({
 		secret:"khaled is the best programmer",
@@ -45,6 +46,8 @@ passport.deserializeUser(User.deserializeUser());
 
 app.use(function(req,res,next){
 	res.locals.currentUser=req.user;
+	res.locals.error = req.flash("error");
+   	res.locals.success = req.flash("success");
 	next();
 });
 
@@ -129,7 +132,10 @@ app.get("/signup",function(req,res){
 	if(!req.user)
 	res.render("signup");
 	else
-		res.redirect("/camps")
+		{
+		req.flash("error","you already have an account");
+		res.redirect("/camps");
+		}
 });
 
 app.get("/login",isLoggedIn,function(req,res){
@@ -138,9 +144,14 @@ app.get("/login",isLoggedIn,function(req,res){
 });
 
 app.post("/login", passport.authenticate("local",{
+	
 	successRedirect: "/camps",
+	
 	failureRedirect: "/login",
-}),function(req,res){});
+}),function(req,res){
+	
+	
+});
 
 
 
@@ -149,10 +160,11 @@ app.post("/register", function(req, res){
     User.register(newUser, req.body.password, function(err, user){
         if(err){
             console.log(err);
+			req.flash("error","you can't sign up with this information");
             return res.render("signup");
         }
         passport.authenticate("local")(req, res, function(){
-			
+			req.flash("success","you signed up successfully");
            res.redirect("/camps"); 
         });
     });
