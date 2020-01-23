@@ -186,6 +186,69 @@ app.post("/camps", isLoggedIn, function(req, res){
     res.redirect("/camps");
 });
 
+app.get("/camp/update/comment/:id",isLoggedIn,function(req,res){
+	
+	Comment.findById(req.params.id,function(err,comment){
+		if(!err)
+			{
+				if(comment.user.id.equals(req.user._id)){
+					
+					res.render("updateComment",{comment:comment});
+				}
+				else 
+					{
+						console.log("u didn't write this commen")
+						res.redirect("back");
+					}
+			}
+		
+		
+		
+	})
+	
+	
+});
+app.post("/comment/:id/update",isLoggedIn,function(req,res){
+	Comment.findByIdAndUpdate(req.params.id,req.body.comment,function(err,comment){
+		if(err)
+			{
+				res.redirect("/camps");
+			}
+		else
+			{
+				console.log("it worked");
+				res.redirect("/camps");
+			}
+		
+	})
+	
+	
+});
+
+app.get("/camp/delete/comment/:id",isLoggedIn,function(req,res){
+	
+	Comment.findById(req.params.id,function(err,comment){
+		if(!err)
+			{
+				if(comment.user.id.equals(req.user._id)){
+					
+					comment.remove();
+					res.redirect("back");
+				}
+				else 
+					{
+						console.log("u didn't write this commen")
+						res.redirect("back");
+					}
+			}
+		
+		
+		
+	})
+	
+	
+});
+
 app.post("/camp/:id/comments",isLoggedIn, function(req, res){
     // get data from form and add to campgrounds array
 	Camp.findById(req.params.id,function(err,camp){
@@ -249,15 +312,28 @@ app.get("/camp/:id/comments/new",function(req,res){
 });	
 	
 app.get("/camp/delete/:id",function(req,res){
-	Camp.findByIdAndRemove(req.params.id,function(err,camp){
+	Camp.findById(req.params.id,function(err,camp){
 		if(!err)
-			res.redirect("/camps");
+			{
+			if(camp.user.id.equals(req.user._id)){
+				camp.remove();
+				res.redirect("/camps");
+			}
+				else
+					{
+						console.log("this is not ur camp");
+						res.redirect("back");
+					}
+			}
 		else 
+			{
 			console.log(err);
+			res.redirect("/camps");
+			}
 		
 	});
 });	
-app.post("/camp/update/:id",function(req,res){
+app.post("/camp/update/:id",isLoggedIn,function(req,res){
 	Camp.findByIdAndUpdate(req.params.id,req.body.camp,function(err,camp){
 		if(!err)
 			res.redirect("/camps");

@@ -44,6 +44,10 @@
                             <p>
                                 <%= comment.text %> 
                             </p>
+							<% if (currentUser){ %>
+                    <a class="btn btn-warning" href="update/comment/<%=comment._id%>"> Edit </a>
+					<a class="btn btn-danger" href="delete/comment/<%=comment._id%>"> Delete </a>
+					<% } %>
                         </div>
                     </div>
                 <% }) %>
