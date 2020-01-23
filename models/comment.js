@@ -1,8 +1,14 @@
 var mongoose=require("mongoose");
 
 var comment_schema = new mongoose.Schema({
-	author : String,
-	body :String
+	text :String,
+	user:{
+	id:{
+	type: mongoose.Schema.Types.ObjectId,
+		ref: "User"
+},
+	username:String
+}
 	
 });
 
