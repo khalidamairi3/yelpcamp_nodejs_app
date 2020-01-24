@@ -26,7 +26,15 @@ var passport=require("passport"),
 
 app.use(bodyParser.urlencoded({extended: true}));
 var url = process.env.DATABASEURL || "mongodb://localhost/yelp_camp";
-mongoose.connect(url);
+mongoose.connect(url, {
+	useNewUrlParser: true,
+	useCreateIndex: true
+}).then(() => {
+	console.log('Connected to DB!');
+}).catch(err => {
+	console.log('ERROR:', err.message);
+});
+
 
 
 
