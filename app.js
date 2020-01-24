@@ -24,7 +24,13 @@ var passport=require("passport"),
     
 
 mongoose.connect("mongodb://localhost/yelp_camp");
+
 app.use(bodyParser.urlencoded({extended: true}));
+var url = process.env.DATABASEURL || "mongodb://localhost/yelp_camp";
+mongoose.connect(url);
+
+
+
 app.set("view engine", "ejs");
 // app.use(express.static(__dirname + "/public"));
 // seedDB();
