@@ -3,27 +3,31 @@
 <head>
    
    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<link rel="stylesheet" href="/stylesheets/landing.css">
     <meta charset="UTF-8">
+	<script src="https://kit.fontawesome.com/88a99932ad.js" crossorigin="anonymous"></script>
+	<link rel="shortcut icon" type="image/x-icon" href="MacBook-AL-Active.ico">
     <title>yelpcamp</title>
 </head>
 <body>
     
-    <nav class="navbar navbar-default">
+    <nav id="nav-black" class="navbar navbar-dark bg-dark">
   <div class="container-fluid">
     <div class="navbar-header">
       <a class="navbar-brand" href="/">
+		<i class="fas fa-campground"></i>
         Yelpcamp
       </a>
 	  </div>
 		<div class="collapse navbar-collapse">
-                <ul class="nav navbar-nav navbar-right">
+                <ul class="nav navbar-nav  navbar-right">
 					<% if (!currentUser){ %>
-					<li><a  href="/signup"> Signup </a></li>
-					<li><a href="/login">Login </a></li> 
+					<li><a  href="/signup"><i class="fas fa-user-plus"></i> Signup </a></li>
+					<li><a href="/login"><i class="fas fa-sign-in-alt"></i> Login </a></li> 
 					<% }else{ %>
 					
-					<li><a href="#">Signed in as <%= currentUser.username %> </a></li>
-					<li><a href="/logout">Logout </a></li>
+					<li><a href="#"><i class="fas fa-user-alt"></i> Signed in as <%= currentUser.username %> </a></li>
+					<li><a href="/logout"><i class="fas fa-sign-out-alt"></i> Logout </a></li>
 					<% } %>
 			</ul>
 		</div>

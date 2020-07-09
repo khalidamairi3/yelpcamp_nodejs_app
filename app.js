@@ -11,16 +11,6 @@ var passport=require("passport"),
 	LocalStrategy=require("passport-local"),
 	flash=require("connect-flash");
 
-// var express     = require("express"),
-//     app         = express(),
-//     bodyParser  = require("body-parser"),
-//     mongoose    = require("mongoose"),
-//     passport    = require("passport"),
-//     LocalStrategy = require("passport-local"),
-//     Campground  = require("./models/camp"),
-//     Comment     = require("./models/comment"),
-//     User        = require("./models/user");
-//     // seedDB      = require("./seeds")
 
 // mongoose.connect("mongodb://localhost/yelp_camp");
 
@@ -39,7 +29,7 @@ mongoose.connect("mongodb+srv://khaled:vdhgl]vd]1902@cluster0-5yieo.mongodb.net/
 
 
 app.set("view engine", "ejs");
-// app.use(express.static(__dirname + "/public"));
+app.use(express.static(__dirname + "/public"));
 // seedDB();
 app.use(flash());
 // PASSPORT CONFIGURATION
@@ -55,6 +45,28 @@ passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
+var multer = require('multer');
+var storage = multer.diskStorage({
+  filename: function(req, file, callback) {
+    callback(null, Date.now() + file.originalname);
+  }
+});
+var imageFilter = function (req, file, cb) {
+    // accept image files only
+    if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/i)) {
+        return cb(new Error('Only image files are allowed!'), false);
+    }
+    cb(null, true);
+};
+var upload = multer({ storage: storage, fileFilter: imageFilter})
+
+var cloudinary = require('cloudinary');
+cloudinary.config({ 
+  cloud_name: 'dk2s9wdyc', 
+  api_key: "722642847521728", 
+  api_secret: "p_0_IvRliQ4fD7Ip5lkDccUyg0A"
+});
+
 
 
 app.use(function(req,res,next){
@@ -65,41 +77,6 @@ app.use(function(req,res,next){
 });
 
 
-
-
-
-// seedDB = require("./seeds");
-// seedDB();
-
-
-// Camp.update({name:"khaled"},{$set:{img:"https://media.istockphoto.com/photos/colorful-landscape-with-high-himalayan-mountains-beautiful-curving-picture-id968630976?k=6&m=968630976&s=612x612&w=0&h=YTO-4FYXUXpBa0ABfmypqOxc-jeEkvfiF875J4H6E6E="}},function(err,camp){
-// 	if(!err){
-// 		console.log("updated successfully");
-// 	}
-// })
-
-// app.use(bodyParser.urlencoded({extended: true}));
-// Camp.create({
-// 	name:"khaled",
-// 	img:"https://media.istockphoto.com/photos/holding-up-photos-of-the-leaning-tower-of-pisa-	picture-id932767686?k=6&m=932767686&s=612x612&w=0&h=Z0Z0-m6kXQDwAevCNHRXkDqqEzUvjaBHmVzh29yHsLA="},
-// 			{
-// 	name:"ahmad",
-// 	img:"https://media.istockphoto.com/photos/happy-smiling-woman-looks-out-from-window-traveling-by-train-on-most-picture-id952716620?k=6&m=952716620&s=612x612&w=0&h=EbkMuef2Szx40moYM_C-48zV9rgLFjuHxqSoMKVQ0f4="},
-// 			{
-// 	name:"salem",
-// 	img:"https://media.istockphoto.com/photos/middleaged-man-and-his-companion-handsome-blond-lady-on-a-boat-ride-picture-id647424102?k=6&m=647424102&s=612x612&w=0&h=oX5DuW155N9_khlAKz7ITSSxiId1jOro_77vX9Ux940="},function(err,Camp){
-	
-// 	if(err){
-// 		console.log("sth went wrong");
-// 	}
-// 	else{
-// 		console.log("3 camps are created");
-// 	}
-// }
-// 		   );
-
-		  
-// app.set("view engine","ejs");
 app.get("/",function(req,res){
 	
 	res.render("landing");
@@ -183,10 +160,11 @@ app.post("/register", function(req, res){
     });
 });
 
-app.post("/camps", isLoggedIn, function(req, res){
+app.post("/camps", isLoggedIn,upload.single('image'), function(req, res){
     // get data from form and add to campgrounds array
+	cloudinary.uploader.upload(req.file.path, function(result) {
     var name = req.body.camp["name"],
-		image=req.body.camp["img"],
+		image=result.secure_url;
 		des=req.body.camp["description"],
 		
 		user={
@@ -209,7 +187,7 @@ app.post("/camps", isLoggedIn, function(req, res){
 	});
     //redirect back to campgrounds page
     res.redirect("/camps");
-});
+})});
 
 app.get("/camp/update/comment/:id",isLoggedIn,function(req,res){
 	
@@ -382,12 +360,12 @@ app.get("/logout",function(req,res){
 	res.redirect("/");
 });
 
-app.listen(process.env.PORT, process.env.IP, function(){
-   console.log("The YelpCamp Server Has Started!");
-});
-
-
-// app.listen(3000,function(){
-	
-// 	console.log("yelpcam has started");
+// app.listen(process.env.PORT, process.env.IP, function(){
+//    console.log("The YelpCamp Server Has Started!");
 // });
+
+
+app.listen(3000,function(){
+	
+	console.log("yelpcam has started");
+});
