@@ -360,12 +360,12 @@ app.get("/logout",function(req,res){
 	res.redirect("/");
 });
 
-// app.listen(process.env.PORT, process.env.IP, function(){
-//    console.log("The YelpCamp Server Has Started!");
-// });
-
-
-app.listen(3000,function(){
-	
-	console.log("yelpcam has started");
+app.listen(process.env.PORT, process.env.IP, function(){
+   console.log("The YelpCamp Server Has Started!");
 });
+
+
+// app.listen(3000,function(){
+	
+// 	console.log("yelpcam has started");
+// });
