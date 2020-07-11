@@ -362,7 +362,7 @@ app.post("/camp/update/:id",isLoggedIn,upload.single('image'),function(req,res){
 	});
 	
 	
-});
+})});
 
 function isLoggedIn(req, res, next){
     if(req.isAuthenticated()){
