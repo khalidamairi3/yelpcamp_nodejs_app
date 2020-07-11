@@ -343,12 +343,16 @@ app.post("/camp/update/:id",isLoggedIn,upload.single('image'),function(req,res){
 
     var name = req.body.camp["name"],
 		image=result.secure_url;
-		des=req.body.camp["description"]
+		des=req.body.camp["description"],
 		
-	var newCampground ={name:name,img:image,description:des};
-	
-			
-	});
+		user={
+			id:req.user._id,
+			username:req.user.username
+		};
+	var newCampground ={name:name,img:image,description:des,user:user};
+		console.log(des);
+		console.log(newCampground);
+   
 	Camp.findByIdAndUpdate(req.params.id,newCampground,function(err,camp){
 		if(!err)
 			res.redirect("/camps");
