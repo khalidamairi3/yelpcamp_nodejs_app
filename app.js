@@ -337,23 +337,8 @@ app.get("/camp/delete/:id",function(req,res){
 		
 	});
 });	
-app.post("/camp/update/:id",isLoggedIn,upload.single('image'),function(req,res){
-	
-	cloudinary.uploader.upload(req.file.path, function(result) {
-
-    var name = req.body.camp["name"],
-		image=result.secure_url;
-		des=req.body.camp["description"],
-		
-		user={
-			id:req.user._id,
-			username:req.user.username
-		};
-	var newCampground ={name:name,img:image,description:des,user:user};
-		console.log(des);
-		console.log(newCampground);
-   
-	Camp.findByIdAndUpdate(req.params.id,newCampground,function(err,camp){
+app.post("/camp/update/:id",isLoggedIn,function(req,res){
+	Camp.findByIdAndUpdate(req.params.id,req.body.camp,function(err,camp){
 		if(!err)
 			res.redirect("/camps");
 		else 
@@ -362,7 +347,7 @@ app.post("/camp/update/:id",isLoggedIn,upload.single('image'),function(req,res){
 	});
 	
 	
-})});
+});
 
 function isLoggedIn(req, res, next){
     if(req.isAuthenticated()){
