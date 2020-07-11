@@ -16,7 +16,7 @@ var passport=require("passport"),
 
 app.use(bodyParser.urlencoded({extended: true}));
 var url = process.env.DATABASEURL || "mongodb://localhost/yelp_camp";
-mongoose.connect("mongodb+srv://khaled:vdhgl]vd]1902@cluster0-5yieo.mongodb.net/test?retryWrites=true&w=majority", {
+mongoose.connect(process.env.DATABASE_KEY, {
 	useNewUrlParser: true,
 	useCreateIndex: true
 }).then(() => {
@@ -62,9 +62,9 @@ var upload = multer({ storage: storage, fileFilter: imageFilter})
 
 var cloudinary = require('cloudinary');
 cloudinary.config({ 
-  cloud_name: 'dk2s9wdyc', 
-  api_key: "722642847521728", 
-  api_secret: "p_0_IvRliQ4fD7Ip5lkDccUyg0A"
+  cloud_name: process.env.CLOUD_NAME, 
+  api_key: process.env.API_KEY, 
+  api_secret: process.env.API_SECRET
 });
 
 
@@ -163,6 +163,8 @@ app.post("/register", function(req, res){
 app.post("/camps", isLoggedIn,upload.single('image'), function(req, res){
     // get data from form and add to campgrounds array
 	cloudinary.uploader.upload(req.file.path, function(result) {
+		console.log(result)
+		console.log(result.secure_url)
     var name = req.body.camp["name"],
 		image=result.secure_url;
 		des=req.body.camp["description"],
