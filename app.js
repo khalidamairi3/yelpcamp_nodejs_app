@@ -163,8 +163,7 @@ app.post("/register", function(req, res){
 app.post("/camps", isLoggedIn,upload.single('image'), function(req, res){
     // get data from form and add to campgrounds array
 	cloudinary.uploader.upload(req.file.path, function(result) {
-		console.log(result)
-		console.log(result.secure_url)
+
     var name = req.body.camp["name"],
 		image=result.secure_url;
 		des=req.body.camp["description"],
@@ -338,8 +337,19 @@ app.get("/camp/delete/:id",function(req,res){
 		
 	});
 });	
-app.post("/camp/update/:id",isLoggedIn,function(req,res){
-	Camp.findByIdAndUpdate(req.params.id,req.body.camp,function(err,camp){
+app.post("/camp/update/:id",isLoggedIn,upload.single('image'),function(req,res){
+	
+	cloudinary.uploader.upload(req.file.path, function(result) {
+
+    var name = req.body.camp["name"],
+		image=result.secure_url;
+		des=req.body.camp["description"]
+		
+	var newCampground ={name:name,img:image,description:des};
+	
+			
+	});
+	Camp.findByIdAndUpdate(req.params.id,newCampground,function(err,camp){
 		if(!err)
 			res.redirect("/camps");
 		else 
